@@ -1,36 +1,74 @@
 const express = require('express');
-const faker = require('faker');
 
+const ProductsService = require('../services/products');
+const validatorHandler = require('./../middleware/validatorHandler');
+const {
+  createProductSchema,
+  updateProductSchema,
+  getProductSchema,
+} = require('./../schemas/product');
 const router = express.Router();
+const service = new ProductsService();
 
-router.get('/', (req, res) => {
-  const products = [];
-  const { size } = req.query;
-  const limit = size || 10;
-
-  for (let index = 0; index < limit; index++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      image: faker.image.imageUrl(),
-    });
-  }
+router.get('/', async (req, res) => {
+  const products = await service.findAll();
   res.json(products);
 });
 
-router.get('/filter', (req, res) => {
-  res.send('yo soy un filter');
-});
+router.get(
+  '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const product = await service.findOne(id);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
-router.get('/:id', (req, res) => {
-  const id = req.params.id;
-  res.json([
-    {
-      id,
-      name: 'product 2',
-      price: 2000,
-    },
-  ]);
+router.post(
+  '/',
+  validatorHandler(createProductSchema, 'params'),
+  async (req, res) => {
+    const body = req.body;
+    const newProduct = await service.createProduct(body);
+    res.status(201).json(newProduct);
+  }
+);
+
+router.patch(
+  '/:id',
+  validatorHandler(updateProductSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const product = await service.updateProduct(id, body);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.put(
+  '/:id',
+  validatorHandler(updateProductSchema, 'params'),
+  async (req, res) => {
+    const { id } = req.params;
+    const body = req.body;
+    const product = await service.updateProduct(id, body);
+    res.json(product);
+  }
+);
+
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  const deleted = await service.deleteProduct(id);
+  res.json(deleted);
 });
 
 module.exports = router;
