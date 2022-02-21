@@ -1,14 +1,20 @@
 //const boom = require('@hapi/boom');
+const pool = require('./../libs/postgresPool');
 
 class CategoriesService {
-  constructor() {}
+  constructor() {
+    this.pool = pool;
+    this.pool.on('error', (err) => console.error(err));
+  }
 
   async createCategory(data) {
     return data;
   }
 
   async findAll() {
-    return [];
+    const query = 'SELECT * FROM tasks';
+    const rta = await this.pool.query(query);
+    return rta.rows;
   }
 
   async findOne(id) {
