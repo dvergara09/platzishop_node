@@ -35,7 +35,7 @@ router.get(
 
 router.post(
   '/',
-  validatorHandler(createUserSchema, 'params'),
+  validatorHandler(createUserSchema, 'body'),
   async (req, res) => {
     const body = req.body;
     const newUser = await service.createUser(body);
@@ -45,13 +45,14 @@ router.post(
 
 router.patch(
   '/:id',
-  validatorHandler(updateUserSchema, 'params'),
+  validatorHandler(getUserSchema, 'params'),
+  validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
-      const user = await service.updateUser(id, body);
-      res.json(user);
+      const category = await service.updateUser(id, body);
+      res.json(category);
     } catch (error) {
       next(error);
     }
@@ -69,10 +70,18 @@ router.put(
   }
 );
 
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-  const deleted = await service.deleteUser(id);
-  res.json(deleted);
-});
+router.delete(
+  '/:id',
+  validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.deleteUser(id);
+      res.status(201).json({ id });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = router;
