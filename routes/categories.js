@@ -13,7 +13,7 @@ const service = new CategoryService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const categories = await service.findAll();
+    const categories = await service.findCategories();
     res.json(categories);
   } catch (error) {
     next(error);
@@ -26,7 +26,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const category = await service.findOne(id);
+      const category = await service.findCategory(id);
       res.json(category);
     } catch (error) {
       next(error);
