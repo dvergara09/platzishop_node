@@ -13,7 +13,7 @@ const service = new OrdersService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const orders = await service.findAll();
+    const orders = await service.findOrders();
     res.json(orders);
   } catch (error) {
     next(error);
@@ -26,7 +26,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const order = await service.findOne(id);
+      const order = await service.findOrder(id);
       res.json(order);
     } catch (error) {
       next(error);
