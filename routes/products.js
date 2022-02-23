@@ -11,7 +11,7 @@ const router = express.Router();
 const service = new ProductsService();
 
 router.get('/', async (req, res) => {
-  const products = await service.findAll();
+  const products = await service.findProducts();
   res.json(products);
 });
 
@@ -21,7 +21,7 @@ router.get(
   async (req, res, next) => {
     try {
       const id = req.params.id;
-      const product = await service.findOne(id);
+      const product = await service.findProduct(id);
       res.json(product);
     } catch (error) {
       next(error);
@@ -31,11 +31,15 @@ router.get(
 
 router.post(
   '/',
-  validatorHandler(createProductSchema, 'params'),
-  async (req, res) => {
-    const body = req.body;
-    const newProduct = await service.createProduct(body);
-    res.status(201).json(newProduct);
+  validatorHandler(createProductSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const newProduct = await service.createProduct(body);
+      res.status(201).json(newProduct);
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

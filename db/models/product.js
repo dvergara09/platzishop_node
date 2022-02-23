@@ -27,10 +27,10 @@ const ProductSchema = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  createdAt: {
+  createAt: {
     allowNull: false,
     type: DataTypes.DATE,
-    field: 'created_at',
+    field: 'create_at',
     defaultValue: Sequelize.NOW,
   },
   categoryId: {
