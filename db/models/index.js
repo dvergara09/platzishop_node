@@ -1,9 +1,9 @@
-const { User, UserSchema } = require('./user');
-const { Customer, CustomerSchema } = require('./customer');
-const { Category, CategorySchema } = require('./category');
-const { Product, ProductSchema } = require('./product');
-const { Order, OrderSchema } = require('./order');
-const { OrderProduct, OrderProductSchema } = require('./order-product');
+const { User, UserSchema } = require('./user.model');
+const { Customer, CustomerSchema } = require('./customer.model');
+const { Category, CategorySchema } = require('./category.model');
+const { Product, ProductSchema } = require('./product.model');
+const { Order, OrderSchema } = require('./order.model');
+const { OrderProduct, OrderProductSchema } = require('./order-product.model');
 
 function setupModels(sequelize) {
   User.init(UserSchema, User.config(sequelize));

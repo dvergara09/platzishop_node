@@ -2,12 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const routerApi = require('./routes');
 
-const {
-  logErrors,
-  errorHandler,
-  boomErrorHanddler,
-  ormErrorHandler,
-} = require('./middleware/errorHandler');
+const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/error.handler');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,8 +17,8 @@ const options = {
     } else {
       callback(new Error('no permitido'));
     }
-  },
-};
+  }
+}
 app.use(cors(options));
 
 app.get('/', (req, res) => {
@@ -38,9 +33,10 @@ routerApi(app);
 
 app.use(logErrors);
 app.use(ormErrorHandler);
-app.use(boomErrorHanddler);
+app.use(boomErrorHandler);
 app.use(errorHandler);
 
+
 app.listen(port, () => {
-  console.log('Mi port' + port);
+  console.log('Mi port' +  port);
 });
